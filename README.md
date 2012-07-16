@@ -1,5 +1,7 @@
 #mongo-rest-layer
-A simple mongo rest layer for a Play! 2 app.
+A simple mongo rest layer for a Play! 2 app. Its a bit like the rest api
+provided by mongolab.com.
+
 
 ## Usage
 ### Add the dependency

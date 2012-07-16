@@ -84,7 +84,7 @@ object MongoRestLayerController extends Controller {
    * To change this you need to add modifiers to the request.
    * @see http://www.mongodb.org/display/DOCS/Updating
    * @example
-   * curl http://localhost:9000/dev/tagger/items/4ffff8c43004ad7a7c441528
+   * curl http://localhost:9000/mrl/items/4ffff8c43004ad7a7c441528
    * --request POST
    * --data 'item={ "$set":{"blah5":"blah5"}}'
    * @param collection
