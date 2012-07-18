@@ -19,13 +19,6 @@ object DBConnect extends ConnectionInitializer {
     var db: MongoDB = null
 
     def init(mongoUri: String) = {
-
-      /*
-      val mongoConn = MongoConnection("localhost", 27017)
-      db = mongoConn.getDB("content-tagger-dev")
-      db.authenticate("test", "test")
-       */
-
       val uri = MongoURI(mongoUri)
       val mongo = MongoConnection(uri)
       db = mongo(uri.database.get)

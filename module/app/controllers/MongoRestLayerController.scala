@@ -9,6 +9,10 @@ import org.bson.types.ObjectId
 
 object MongoRestLayerController extends Controller {
 
+  val QUERY : String = "q"
+  val LIMIT : String = "l"
+  val FIELDS : String = "f"
+
   val Json = ("Content-Type" -> "application/json; charset=utf-8")
 
   case class Oid(oid: String)
@@ -29,7 +33,7 @@ object MongoRestLayerController extends Controller {
   def query(collection: String) = Action {
     implicit request =>
 
-      getFormParameters("query", "fields") match {
+      getFormParameters(QUERY, FIELDS) match {
         case List(Some(queryString), Some(fieldsString)) => {
           val dbCollection: MongoCollection = DBConnect.collection(collection)
           val query: DBObject = com.mongodb.util.JSON.parse(queryString).asInstanceOf[DBObject]
@@ -43,7 +47,7 @@ object MongoRestLayerController extends Controller {
 
   def count(collection: String) = Action {
     implicit request =>
-      getFormParameters("query") match {
+      getFormParameters(QUERY) match {
         case List(Some(queryString)) => {
           val dbCollection: MongoCollection = DBConnect.collection(collection)
           val query: DBObject = com.mongodb.util.JSON.parse(queryString).asInstanceOf[DBObject]
@@ -87,9 +91,8 @@ object MongoRestLayerController extends Controller {
    * curl http://localhost:9000/mrl/items/4ffff8c43004ad7a7c441528
    * --request POST
    * --data 'item={ "$set":{"blah5":"blah5"}}'
-   * @param collection
-   * @param id
-   *
+   * @param collection - the collection
+   * @param id - the item id
    * @return
    */
   def updateOne(collection: String, id: String) = Action {
