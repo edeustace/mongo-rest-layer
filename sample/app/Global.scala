@@ -4,6 +4,7 @@ import play.api.mvc.{Handler, RequestHeader, Request}
 object Global extends GlobalSettings {
 
 
+  val mongoUri : String = "mongodb://test:test@localhost:27017/content-tagger-dev"
   val mongoRestLayer = new MongoRestLayer("/mongo-rest", mongoUri)
 
   override def onRouteRequest(request:RequestHeader) : Option[Handler] = {
