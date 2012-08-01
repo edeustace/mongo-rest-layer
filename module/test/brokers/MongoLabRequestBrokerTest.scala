@@ -1,11 +1,11 @@
 package brokers
 
 import org.specs2.mutable.Specification
-import db.CollectionAction
+import db.{JsonCollectionAction, CollectionAction}
 import play.api.test.{FakeHeaders, FakeRequest}
 import play.api.mvc.AnyContent
 
-object FakeLayer extends CollectionAction {
+object FakeLayer extends JsonCollectionAction {
   override def list(collection: String) = "list:" + collection
 
   def query(collection: String, query: String, fields: String, limit: Int, offset: Int) =

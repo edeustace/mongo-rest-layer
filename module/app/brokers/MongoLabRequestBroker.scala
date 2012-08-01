@@ -1,6 +1,6 @@
 package brokers
 
-import db.CollectionAction
+import db.{JsonCollectionAction, CollectionAction}
 import play.api.mvc._
 import util.matching.Regex
 import java.net.URLDecoder
@@ -12,12 +12,12 @@ import play.api.mvc.Request
  * A Rest implementdation similar to the one provided by mongolab.com
  * @param layer
  */
-class MongoLabRequestBroker(val layer: CollectionAction) extends RequestBroker {
+class MongoLabRequestBroker(val layer: JsonCollectionAction) extends RequestBroker {
 
 
   val Json = ("Content-Type" -> "application/json; charset=utf-8")
 
-  val QueryPath: Regex = """/.*?/collections/([\w\d]*?)\?(.*)""".r
+  val QueryPath: Regex = """/.*?/collections/([\w|\d|_|-]*)\?(.*q=.*)""".r
   val ListPath: Regex = """/.*?/collections/([\w|\d|_|-]*)\?*.*""".r
   val SinglePath: Regex = """/.*?/collections/([\w|\d|_|-]*?)/([\w|\d|-|_]*)\?*.*""".r
   val RootPath: Regex = "(.*)".r
@@ -41,10 +41,14 @@ class MongoLabRequestBroker(val layer: CollectionAction) extends RequestBroker {
    */
   override def handle(request: RequestHeader): Option[String] = {
 
+    val decoded: String = URLDecoder.decode(request.uri, "UTF-8")
+
     request.method match {
       case "GET" => {
-        request.uri match {
+        decoded match {
           case QueryPath(collection, paramString) => {
+
+            println("!!Matches QueryPath")
             val decoded: String = URLDecoder.decode(paramString, "UTF-8")
             val params: List[String] = decoded.split("&").toList
             val q = params.find(p => p.startsWith("q")).getOrElse("q= ").split("q=")(1)
@@ -60,8 +64,17 @@ class MongoLabRequestBroker(val layer: CollectionAction) extends RequestBroker {
               Some(layer.query(collection, q, f, l.toInt, sk.toInt))
             }
           }
-          case SinglePath(collection, id) => Some(layer.getOne(collection, id))
-          case ListPath(collection) => Some(layer.list(collection))
+          case SinglePath(collection, id) => {
+            if ( id == "null"){
+              None
+            }else{
+              Some(layer.getOne(collection, id))
+            }
+          }
+          case ListPath(collection) => {
+            println("!!Matches ListPath")
+            Some(layer.list(collection))
+          }
           case _ => None
         }
 
@@ -122,8 +135,17 @@ class MongoLabRequestBroker(val layer: CollectionAction) extends RequestBroker {
               wrapSomeAction(layer.query(collection, q, f, l.toInt, sk.toInt))
             }
           }
-          case SinglePath(collection, id) => wrapSomeAction(layer.getOne(collection, id))
-          case ListPath(collection) => wrapSomeAction(layer.list(collection))
+          case SinglePath(collection, id) => {
+            if ( id == "null"){
+              None
+            }else{
+            wrapSomeAction(layer.getOne(collection, id))
+            }
+          }
+          case ListPath(collection) => {
+
+            wrapSomeAction(layer.list(collection))
+          }
           case _ => None
         }
 

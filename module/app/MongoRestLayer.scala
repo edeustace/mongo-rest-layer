@@ -1,11 +1,11 @@
 import brokers.{MongoLabRequestBroker, RequestBroker}
 import play.api.mvc.{Results, Action, Handler, RequestHeader}
 import util.matching.Regex
-import db.{CollectionAction, ConnectionInitializer, DBConnect}
+import db.{JsonCollectionAction, CollectionAction, ConnectionInitializer, DBConnect}
 
 class MongoRestLayer(val rootPath: String,
                      val mongoUri: String,
-                     val handler: RequestBroker = new MongoLabRequestBroker(CollectionAction),
+                     val handler: RequestBroker = new MongoLabRequestBroker(JsonCollectionAction),
                      initializer: ConnectionInitializer = DBConnect) {
 
   require(rootPath != null && rootPath.startsWith("/"), "the path must start with a leading /")
@@ -16,8 +16,6 @@ class MongoRestLayer(val rootPath: String,
   val RootPath: Regex = (rootPath + "(.*)").r
 
   def handlerFor(request: RequestHeader): Option[Handler] = {
-
-    val Json = ("Content-Type" -> "application/json; charset=utf-8")
 
     request.path match {
       case RootPath(path) => {
