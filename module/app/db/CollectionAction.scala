@@ -2,7 +2,7 @@ package db
 
 import com.mongodb.casbah.{MongoCursor, MongoCollection}
 import com.mongodb.{WriteResult, DBObject}
-import com.codahale.jerkson.Json._
+
 import org.bson.types.ObjectId
 import com.sun.tools.javac.main.OptionName
 
