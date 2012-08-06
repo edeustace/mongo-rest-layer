@@ -22,7 +22,11 @@ object DBConnect extends ConnectionInitializer {
       val uri = MongoURI(mongoUri)
       val mongo = MongoConnection(uri)
       db = mongo(uri.database.get)
-      db.authenticate(uri.username.get, uri.password.get.foldLeft("")(_ + _.toString))
+
+      uri.username match {
+        case Some(foundUsername) => db.authenticate(uri.username.get, uri.password.get.foldLeft("")(_ + _.toString))
+        case _ => //don't authenticate
+      }
     }
   }
 }

@@ -5,7 +5,7 @@ import com.mongodb.{WriteResult, DBObject}
 
 import org.bson.types.ObjectId
 import com.sun.tools.javac.main.OptionName
-
+import com.codahale.jerkson.Json.generate
 
 /**
  * A set of db actions that takes a string and returns a json string.
